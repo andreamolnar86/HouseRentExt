@@ -172,6 +172,7 @@ namespace HouseRent
 
         /// <summary>
         /// Returns the price of a house with a given ID using parametrized queries.
+        /// Builds the SqlCommand object.
         /// </summary>
         /// <param name="houseId">The ID of the house to be deleted</param>
         /// <returns>Errormessage ("OK" if no exception occured)</returns>
@@ -179,14 +180,32 @@ namespace HouseRent
         public int GetHousePriceParametrized(int houseID, ref string error)
         {
             string query = " SELECT Ar FROM Nyaralok " +
-                           " WHERE NyaraloId = @houseID";
-            string[] parameters = new string[1];
-            parameters[0] = "@houseID";
-            string[] parameterValues = new string[1];
-            parameterValues[0] = houseID.ToString();
-            int retprice = Convert.ToInt16(ExecuteScalarParametrized(query, parameters, parameterValues, ref error));
+                           " WHERE NyaraloId = @phouseID";
+            // Create the command and set its properties.
+            SqlCommand command = new SqlCommand();
+            command.CommandText = query;
+            command.CommandType = CommandType.Text;// ! tarolt eljaras eseten a CommandType property-t at kell allitani!
+            //or simply: SqlCommand command = new SqlCommand(query);
+            
+            // Add the input parameter and set its properties.
+            SqlParameter parameter = new SqlParameter();
+            parameter.ParameterName = "@phouseID";
+            parameter.SqlDbType = SqlDbType.Int;
+            parameter.Direction = ParameterDirection.Input;
+            //a Direction property beallitasa fokent tarolt eljaras meghivasanal fontos, ahol lehetnek kimeneti (output) 
+            //parameterek is valamint visszateritesi ertek (return value)
+            parameter.Value = houseID;
+
+            // Add the parameter to the Parameters collection.
+            command.Parameters.Add(parameter);
+
+            //a feladat trukkosebb, ha like-ot is hasznalunk a where feltetelben:
+            //pl. ha a j-edik parameter "like-ok koze van szoritva", akkor 
+            //a %-jeleket hozzáadhatjuk a paraméter értékéhez:
+            //sqlCommand.Parameters.AddWithValue("@parameterName", "%" + parameterValue + "%");
+
+            int retprice = Convert.ToInt16(base.ExecuteScalarParametrized(command, ref error));
             return retprice;
         }
-
     }
 }

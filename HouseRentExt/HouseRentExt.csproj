@@ -45,7 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CountriesDAL.cs" />
-    <Compile Include="DALGen.cs" />
+    <Compile Include="DALGenExt.cs" />
     <Compile Include="ErrorForm.cs">
       <SubType>Form</SubType>
     </Compile>

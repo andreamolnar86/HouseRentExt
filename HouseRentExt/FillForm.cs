@@ -116,6 +116,7 @@ namespace HouseRent
             lvHouses.Sorting = SortOrder.Ascending;
 
             // Attach Subitems to the ListView
+            lvHouses.Columns.Add("NyaraloID", 0, HorizontalAlignment.Left); //trükk: 0-ra állítjuk a szélességét, így "tüntetve el"
             lvHouses.Columns.Add("NyaraloNev", 100, HorizontalAlignment.Left);
             lvHouses.Columns.Add("Orszagnev", 100, HorizontalAlignment.Left);
             lvHouses.Columns.Add("TulajNev", 100, HorizontalAlignment.Left);
@@ -145,7 +146,8 @@ namespace HouseRent
             {
                 foreach (House item in houseList)
                 {
-                    string[] s = new string[]{item.HouseName, 
+                    string[] s = new string[]{item.HouseId.ToString(),
+                                              item.HouseName, 
                                               item.HouseCountry.CountryName,
                                               item.HouseOwner.OwnerName,
                                               item.Capacity.ToString(), 
@@ -267,9 +269,13 @@ namespace HouseRent
             {
                 //kiszedjuk a kivalasztott sorban levo nyaralo id-jat (pont emiatt volt erdemes hozzaadni a view-hoz az id-t es a lathatosagat false-ra tenni)
                 this.selectedHouseID = Convert.ToInt32(dgvHouses.SelectedRows[0].Cells["houseId"].Value);
+               
+                //ha listView-val dolgozunk: 
+                //[Ugyeljetek, hogy a feltoltesnel a NyaraloID-kat is be kell tolteni a ListView-ba - megfeleloen bovitve a FillLvHouses() metodus]
+                Console.WriteLine("Kiválasztott nyaraló ID-ja és neve: " + lvHouses.SelectedItems[0].SubItems[0].Text + " " + lvHouses.SelectedItems[0].SubItems[1].Text);
 
                 //adatbazisban levo ertek --> megszerzesehez szuksegunk van egy select parancsra
-                 int currentprice = housesDAL.GetHousePrice(this.selectedHouseID, ref errMess);
+                int currentprice = housesDAL.GetHousePrice(this.selectedHouseID, ref errMess);
 
                 //parameterezett query-kkel dolgozo metodushivas:
                 //int currentprice = housesDAL.GetHousePriceParametrized(this.selectedHouseID, ref errMess);
